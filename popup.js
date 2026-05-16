@@ -21,14 +21,33 @@ document.addEventListener('DOMContentLoaded', () => {
         generateButton.disabled = !activeTab?.url;
     });
 
-    generateButton.addEventListener('click', () => {
+    const BACKEND_BASE = 'http://localhost:8080';
+
+    generateButton.addEventListener('click', async () => {
         setState('loading');
 
-        // Temporaryly simulate API call with a timeout
-        window.setTimeout(() => {
-            resultText.textContent = 'Please call the backend API.';
+        const payload = { originalUrl: tabUrlInput.value };
+
+        try {
+            const resp = await fetch(`${BACKEND_BASE}/create`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+
+            if (!resp.ok) {
+                const text = await resp.text();
+                throw new Error(`Server returned ${resp.status}: ${text}`);
+            }
+
+            const data = await resp.json();
+
+            resultText.textContent = data?.shortUrl || 'No shortUrl in response';
             setState('result');
-        }, 900);
+        } catch (err) {
+            resultText.textContent = `Error: ${err.message}`;
+            setState('result');
+        }
     });
 
     backButton.addEventListener('click', () => {
