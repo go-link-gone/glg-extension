@@ -1,0 +1,13 @@
+{
+    "manifest_version": 3,
+    "name": "GoLinkGone",
+    "version": "0.1.0",
+    "description": "A simple browser extension for GoLinkGone URL shortening.",
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "GoLinkGone"
+    },
+    "permissions": [
+        "activeTab"
+    ]
+}
