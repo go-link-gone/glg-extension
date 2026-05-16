@@ -5,9 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabUrlInput = document.getElementById('tab-url');
     const generateButton = document.getElementById('generate-btn');
     const backButton = document.getElementById('back-btn');
+    const copyButton = document.getElementById('copy-btn');
     const resultText = document.getElementById('result-text');
     const qrWrap = document.getElementById('qr-wrap');
     const qrImage = document.getElementById('qr-image');
+    let latestShortUrl = '';
 
     function setState(stateName) {
         initialState.classList.toggle('hidden', stateName !== 'initial');
@@ -27,6 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     generateButton.addEventListener('click', async () => {
         setState('loading');
+        latestShortUrl = '';
+        copyButton.disabled = true;
+        copyButton.textContent = 'Copy';
         qrWrap.classList.add('hidden');
         qrImage.removeAttribute('src');
 
@@ -46,7 +51,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await resp.json();
 
-            resultText.textContent = data?.shortUrl || 'No shortUrl in response';
+            latestShortUrl = data?.shortUrl || '';
+            resultText.textContent = latestShortUrl || 'No shortUrl in response';
+            copyButton.disabled = !latestShortUrl;
 
             if (data?.qrCode) {
                 qrImage.src = `data:image/png;base64,${data.qrCode}`;
@@ -58,8 +65,28 @@ document.addEventListener('DOMContentLoaded', () => {
             setState('result');
         } catch (err) {
             resultText.textContent = `Error: ${err.message}`;
+            copyButton.disabled = true;
             qrWrap.classList.add('hidden');
             setState('result');
+        }
+    });
+
+    copyButton.addEventListener('click', async () => {
+        if (!latestShortUrl) {
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(latestShortUrl);
+            copyButton.textContent = 'Copied!';
+            window.setTimeout(() => {
+                copyButton.textContent = 'Copy';
+            }, 1200);
+        } catch (_err) {
+            copyButton.textContent = 'Failed';
+            window.setTimeout(() => {
+                copyButton.textContent = 'Copy';
+            }, 1200);
         }
     });
 

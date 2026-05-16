@@ -35,7 +35,10 @@
 
             <div id="state-result" class="state-block hidden">
                 <p class="panel-label">Result Preview</p>
-                <p class="panel-text" id="result-text">Short URL will appear here.</p>
+                <div class="result-url-row">
+                    <p class="panel-text" id="result-text">Short URL will appear here.</p>
+                    <button id="copy-btn" class="secondary-button copy-button" type="button" disabled>Copy</button>
+                </div>
                 <div id="qr-wrap" class="qr-wrap hidden">
                     <img id="qr-image" class="qr-image" alt="QR code for short URL" />
                 </div>
