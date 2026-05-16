@@ -103,6 +103,11 @@ h1 {
     line-height: 1.6;
 }
 
+.panel-text.error {
+    color: #d32f2f;
+    font-weight: 600;
+}
+
 .url-input {
     width: 100%;
     padding: 12px 14px;
@@ -167,12 +172,16 @@ h1 {
 }
 
 .qr-wrap {
-    display: grid;
+    display: none;
     place-items: center;
     padding: 8px;
     border: 1px solid var(--outline);
     border-radius: 12px;
     background: #ffffff;
+}
+
+.qr-wrap:not(.hidden) {
+    display: grid;
 }
 
 .qr-image {

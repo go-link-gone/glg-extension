@@ -51,14 +51,32 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!resp.ok) {
-                const text = await resp.text();
-                throw new Error(`Server returned ${resp.status}: ${text}`);
+                const text = await resp.text(); 
+                let userMsg = `An error occurred`;
+                try {
+                    const j = JSON.parse(text);
+                    userMsg = j?.message || j?.error || JSON.stringify(j);
+                } catch (_jsonErr) {
+                    userMsg = text || `Server returned ${resp.status}`;
+                }
+                console.error('Create request failed:', resp.status, text);
+                resultText.textContent = userMsg;
+                resultText.classList.add('error');
+                copyButton.disabled = true;
+                latestQrDataUrl = '';
+                try { qrImage.removeAttribute('src'); } catch (_) { }
+                qrWrap.classList.add('hidden');
+                downloadButton.disabled = true;
+                downloadButton.classList.add('hidden');
+                setState('result');
+                return;
             }
 
             const data = await resp.json();
 
             latestShortUrl = data?.shortUrl || '';
             resultText.textContent = latestShortUrl || 'No shortUrl in response';
+            resultText.classList.remove('error');
             copyButton.disabled = !latestShortUrl;
 
             if (data?.qrCode) {
@@ -75,8 +93,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             setState('result');
         } catch (err) {
-            resultText.textContent = `Error: ${err.message}`;
+            console.error('Create request error:', err);
+            resultText.textContent = 'An error occurred';
+            resultText.classList.add('error');
             copyButton.disabled = true;
+            latestQrDataUrl = '';
+            try { qrImage.removeAttribute('src'); } catch (_) { }
             qrWrap.classList.add('hidden');
             downloadButton.disabled = true;
             downloadButton.classList.add('hidden');
