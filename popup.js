@@ -6,10 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const generateButton = document.getElementById('generate-btn');
     const backButton = document.getElementById('back-btn');
     const copyButton = document.getElementById('copy-btn');
+    const downloadButton = document.getElementById('download-btn');
     const resultText = document.getElementById('result-text');
     const qrWrap = document.getElementById('qr-wrap');
     const qrImage = document.getElementById('qr-image');
     let latestShortUrl = '';
+    let latestQrDataUrl = '';
 
     function setState(stateName) {
         initialState.classList.toggle('hidden', stateName !== 'initial');
@@ -32,6 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
         latestShortUrl = '';
         copyButton.disabled = true;
         copyButton.textContent = 'Copy';
+        downloadButton.disabled = true;
+        downloadButton.classList.add('hidden');
+        downloadButton.textContent = 'Download QR';
+        latestQrDataUrl = '';
         qrWrap.classList.add('hidden');
         qrImage.removeAttribute('src');
 
@@ -56,10 +62,15 @@ document.addEventListener('DOMContentLoaded', () => {
             copyButton.disabled = !latestShortUrl;
 
             if (data?.qrCode) {
-                qrImage.src = `data:image/png;base64,${data.qrCode}`;
+                latestQrDataUrl = `data:image/png;base64,${data.qrCode}`;
+                qrImage.src = latestQrDataUrl;
                 qrWrap.classList.remove('hidden');
+                downloadButton.disabled = false;
+                downloadButton.classList.remove('hidden');
             } else {
                 qrWrap.classList.add('hidden');
+                downloadButton.disabled = true;
+                downloadButton.classList.add('hidden');
             }
 
             setState('result');
@@ -67,6 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
             resultText.textContent = `Error: ${err.message}`;
             copyButton.disabled = true;
             qrWrap.classList.add('hidden');
+            downloadButton.disabled = true;
+            downloadButton.classList.add('hidden');
             setState('result');
         }
     });
@@ -92,5 +105,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     backButton.addEventListener('click', () => {
         setState('initial');
+    });
+
+    downloadButton.addEventListener('click', () => {
+        if (!latestQrDataUrl) {
+            return;
+        }
+
+        const anchor = document.createElement('a');
+        anchor.href = latestQrDataUrl;
+        anchor.download = 'golinkgone-qr.png';
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
     });
 });
