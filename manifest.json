@@ -8,6 +8,7 @@
         "default_title": "GoLinkGone"
     },
     "permissions": [
-        "activeTab"
+        "activeTab",
+        "tabs"
     ]
 }
