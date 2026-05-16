@@ -149,6 +149,21 @@ h1 {
     gap: 10px;
 }
 
+.qr-wrap {
+    display: grid;
+    place-items: center;
+    padding: 8px;
+    border: 1px solid var(--outline);
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+.qr-image {
+    width: 160px;
+    height: 160px;
+    object-fit: contain;
+}
+
 .spinner {
     width: 18px;
     height: 18px;

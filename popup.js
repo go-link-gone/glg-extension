@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const generateButton = document.getElementById('generate-btn');
     const backButton = document.getElementById('back-btn');
     const resultText = document.getElementById('result-text');
+    const qrWrap = document.getElementById('qr-wrap');
+    const qrImage = document.getElementById('qr-image');
 
     function setState(stateName) {
         initialState.classList.toggle('hidden', stateName !== 'initial');
@@ -25,6 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     generateButton.addEventListener('click', async () => {
         setState('loading');
+        qrWrap.classList.add('hidden');
+        qrImage.removeAttribute('src');
 
         const payload = { originalUrl: tabUrlInput.value };
 
@@ -43,9 +47,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await resp.json();
 
             resultText.textContent = data?.shortUrl || 'No shortUrl in response';
+
+            if (data?.qrCode) {
+                qrImage.src = `data:image/png;base64,${data.qrCode}`;
+                qrWrap.classList.remove('hidden');
+            } else {
+                qrWrap.classList.add('hidden');
+            }
+
             setState('result');
         } catch (err) {
             resultText.textContent = `Error: ${err.message}`;
+            qrWrap.classList.add('hidden');
             setState('result');
         }
     });
