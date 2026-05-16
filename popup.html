@@ -19,9 +19,25 @@
         </header>
 
         <section class="panel">
-            <p class="panel-label">Current Tab URL</p>
-            <input id="tab-url" class="url-input" type="text" readonly value="Loading current tab..." />
-            <button id="generate-btn" class="primary-button" type="button" disabled>Generate</button>
+            <div id="state-initial" class="state-block">
+                <p class="panel-label">Current Tab URL</p>
+                <input id="tab-url" class="url-input" type="text" readonly value="Loading current tab..." />
+                <button id="generate-btn" class="primary-button" type="button" disabled>Generate</button>
+            </div>
+
+            <div id="state-loading" class="state-block hidden" aria-live="polite">
+                <p class="panel-label">Generating</p>
+                <div class="loading-row">
+                    <span class="spinner" aria-hidden="true"></span>
+                    <p class="panel-text">Generating...</p>
+                </div>
+            </div>
+
+            <div id="state-result" class="state-block hidden">
+                <p class="panel-label">Result Preview</p>
+                <p class="panel-text" id="result-text">Short URL will appear here.</p>
+                <button id="back-btn" class="secondary-button" type="button">Back</button>
+            </div>
         </section>
     </main>
 
